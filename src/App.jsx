@@ -22,14 +22,14 @@ function App() {
 
   const handleDragOver = (event) => {
     const { over } = event;
-    if (over && over.id === 'dropzone') {
+    if (over && over.id.includes('dropzone')) {
       setIsOverDropzone(true);
     }
   };
 
   const handleDragLeave = (event) => {
     const { over } = event;
-    if (!over || over.id !== 'dropzone') {
+    if (!over || over.id.includes('dropzone')) {
       setIsOverDropzone(false);
     }
   };
@@ -37,8 +37,9 @@ function App() {
   const handleDragEnd = (event) => {
     const { over } = event;
     console.log('Drag ended. Active ID:', event.active.id, 'Over dropzone:', over ? over.id : 'null');
-    if (isOverDropZone && over && over.id === 'dropzone') {
-      addBlock(event.active.id);
+    console.log(isOverDropZone, over, over?.id)
+    if (isOverDropZone && over && over.id.includes('dropzone')) {
+      addBlock(event.active.id, over.id);
     }
     setActiveId(null);
     setIsOverDropzone(false);
@@ -47,11 +48,20 @@ function App() {
     divElement.scrollTop = divElement.scrollHeight;
   };
 
-  const addBlock = (type) => {
+  // const addBlock = (type) => {
+  //   if (editorInstanceRef.current) {
+  //     const blocksCount = editorInstanceRef.current.blocks.getBlocksCount();
+  //     console.log('Inserting block type:', type, 'at index:', blocksCount);
+  //     editorInstanceRef.current.blocks.insert(type, {}, {}, blocksCount, true);
+  //   }
+  // };
+
+  const addBlock = (type, dropzoneId) => {
     if (editorInstanceRef.current) {
       const blocksCount = editorInstanceRef.current.blocks.getBlocksCount();
-      console.log('Inserting block type:', type, 'at index:', blocksCount);
-      editorInstanceRef.current.blocks.insert(type, {}, {}, blocksCount, true);
+      const index = parseInt(dropzoneId.split('-')[1], 10) + 1;
+      console.log('Inserting block type:', type, 'at index:', index);
+      editorInstanceRef.current.blocks.insert(type, {}, {}, index, true);
     }
   };
 

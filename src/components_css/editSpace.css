@@ -66,8 +66,9 @@
 }
 
 .dropzone.active {
-    border-color: #66b3ff;
+    /* border-color: #66b3ff;
     background-color: #e6f7ff;
+    padding: 25px; */
 }
 
 .codex-editor {
@@ -75,3 +76,9 @@
         padding-bottom: 0 !important;
     }
 }
+
+/* .dropzone {
+    height: 1px;
+    padding: 0;
+  } */
+  

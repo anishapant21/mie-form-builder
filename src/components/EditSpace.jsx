@@ -1,10 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
-
 import '../components_css/editSpace.css';
 import { trashCan_Icon, x_icon } from "../custom-Tools/SVGIcons";
 import { SvgImg } from "../custom-Tools/utilsFunction";
-
 import { EditorContext } from "./EditorContext";
 import CustomToolBar from "./CustomToolBar";
 
@@ -12,8 +10,9 @@ const EditSpace = ({ isOverDropzone }) => {
   const { editorInstanceRef, initEditor } = useContext(EditorContext);
   const [dropzoneClass, setDropzoneClass] = useState("dropzone")
   const editorRef = useRef(null);
+  const editorContainerRef = useRef(null);
 
-  const {setNodeRef} = useDroppable({
+  const { setNodeRef } = useDroppable({
     id: 'dropzone',
   });
 
@@ -30,12 +29,34 @@ const EditSpace = ({ isOverDropzone }) => {
     }
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     setDropzoneClass(isOverDropzone ? "dropzone active" : "dropzone");
   }, [isOverDropzone]);
 
+  useEffect(() => {
+    const updateDropzones = () => {
+      const editorBlocks = document.querySelectorAll('.ce-block');
+      editorBlocks.forEach((block, index) => {
+        let dropzone = document.getElementById(`dropzone-${index}`);
+        if (!dropzone) {
+          dropzone = document.createElement('div');
+          dropzone.id = `dropzone-${index}`;
+          dropzone.className = dropzoneClass;
+          dropzone.setAttribute('ref', setNodeRef)
+          
+          block.insertAdjacentElement('afterend', dropzone);
+        }
+      });
+    };
 
-  
+    const observer = new MutationObserver(updateDropzones);
+    observer.observe(document.getElementById('editorjs'), { childList: true, subtree: true });
+
+    updateDropzones();
+
+    return () => observer.disconnect();
+  }, [dropzoneClass]);
+
   return (
     <div className='editorBody'>
       <div className='editorConfigPanel'>
@@ -46,11 +67,11 @@ const EditSpace = ({ isOverDropzone }) => {
         <CustomToolBar />
       </div>
       <div className='editorWrapper'>
-        <div id='editorContainer'>
+        <div id='editorContainer' ref={editorContainerRef}>
           <div id="editorjs"></div>
           <div ref={setNodeRef} className={dropzoneClass}>
             Drop and drop here to add a new element
-          </div>   
+          </div>
         </div>
       </div>
     </div>

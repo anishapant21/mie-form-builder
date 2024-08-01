@@ -37,7 +37,7 @@ function App() {
         dropzone = document.createElement('div');
         dropzone.className = 'existing-dropzone';
         dropzone.id = dropzoneId;
-        block.appendChild(dropzone);
+        block.insertBefore(dropzone, block.firstChild); 
       }
 
       return dropzone;
@@ -58,7 +58,7 @@ function App() {
         indexToBeDropped = editorInstanceRef.current.blocks.getBlocksCount();
       } else {
         const parts = over.id.split("-");
-        indexToBeDropped = Number(parts[1]) + 1;
+        indexToBeDropped = Number(parts[1]);
       }
 
       setOverIndex(indexToBeDropped)
